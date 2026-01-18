@@ -9,12 +9,19 @@ from backend.app.config import get_settings
 from backend.app.utils import ids
 
 _PROFILE_PATH = Path(__file__).resolve().parent.parent / "company_profile.md"
+_FAQ_PATH = Path(__file__).resolve().parent.parent / "company_faq.md"
 
 
 def _load_company_profile() -> str:
     """Load the company profile text for prompt injection."""
 
     return _PROFILE_PATH.read_text(encoding="utf-8").strip()
+
+
+def _load_company_faq() -> str:
+    """Load the company FAQ text for prompt injection."""
+
+    return _FAQ_PATH.read_text(encoding="utf-8").strip()
 
 
 SYSTEM_PROMPT = (
@@ -26,6 +33,8 @@ SYSTEM_PROMPT = (
     "explain the steps and offer to connect to human support.\n\n"
     "Company profile:\n"
     f"{_load_company_profile()}\n\n"
+    "Company FAQ:\n"
+    f"{_load_company_faq()}\n\n"
     "Behavior rules:\n"
     "- Order tracking: ask for order number if missing; provide tracking guidance.\n"
     "- If the customer is angry, acknowledge frustration, apologize briefly, and propose "

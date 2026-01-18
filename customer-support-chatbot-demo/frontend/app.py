@@ -20,6 +20,8 @@ def _init_state() -> None:
         st.session_state.user_id = f"usr_{secrets.token_hex(4)}"
     if "messages" not in st.session_state:
         st.session_state.messages = []
+   
+
 
 
 def _reset_conversation() -> None:
@@ -142,6 +144,26 @@ def main() -> None:
         if st.button("Reset conversation"):
             _reset_conversation()
 
+    st.subheader("Quick actions")
+    st.caption("Click a common request to start the conversation.")
+    quick_actions = [
+        ("Track my order", "Where is my order?"),
+        ("Start a return", "I want to start a return."),
+        ("Request a refund", "I want a refund."),
+        ("Shipping times", "What are your shipping times?"),
+        ("Change delivery address", "Can I change my delivery address?"),
+        ("Cancel an order", "I want to cancel my order."),
+        ("Payment methods", "What payment methods do you accept?"),
+        ("Reset password", "How do I reset my password?"),
+        ("Warranty claim", "I need help with a warranty claim."),
+    ]
+
+    quick_message = None
+    cols = st.columns(3)
+    for idx, (label, message) in enumerate(quick_actions):
+        if cols[idx % 3].button(label):
+            quick_message = message
+
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
             st.write(message["content"])
@@ -149,8 +171,10 @@ def main() -> None:
                 st.caption(f"Latency: {message['latency_ms']} ms")
 
     user_input = st.chat_input("Ask a support question")
-    if not user_input:
+    if not user_input and not quick_message:
         return
+    if not user_input:
+        user_input = quick_message
 
     st.session_state.messages.append({"role": "user", "content": user_input})
     with st.chat_message("user"):

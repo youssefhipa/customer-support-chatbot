@@ -13,7 +13,8 @@ async def call_chat(system_prompt: str, user_message: str) -> tuple[str, int]:
 
     settings = get_settings()
     url = f"{settings.PROXY_BASE_URL.rstrip('/')}/{settings.PROXY_CHAT_PATH.lstrip('/')}"
-    headers = {"Content-Type": "application/json"}
+    # Force identity encoding in case the proxy mislabels compressed responses.
+    headers = {"Content-Type": "application/json", "Accept-Encoding": "identity"}
     if settings.PROXY_API_KEY:
         headers["Authorization"] = f"Bearer {settings.PROXY_API_KEY}"
 
